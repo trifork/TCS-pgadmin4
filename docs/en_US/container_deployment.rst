@@ -251,6 +251,14 @@ Run a simple container over port 80:
         -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' \
         -d dpage/pgadmin4
 
+.. code-block:: powershell
+
+    docker run --rm --name "pgadminLocal" `
+        -p 5051:5050 `
+        -e 'PGADMIN_DEFAULT_EMAIL=rbk@trifork.com' `
+        -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' `
+        -d pgadmin4:local
+
 Run a simple container over port 80, setting some configuration options:
 
 .. code-block:: bash

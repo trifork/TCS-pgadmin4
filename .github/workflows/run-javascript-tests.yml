@@ -1,39 +1,39 @@
-name: Run Javascript tests
+# name: Run Javascript tests
 
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
 
-  workflow_dispatch:
+#   workflow_dispatch:
 
-concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
-  cancel-in-progress: true
+# concurrency:
+#   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+#   cancel-in-progress: true
 
-jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+# jobs:
+#   build:
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         os: [macos-latest, ubuntu-latest, windows-latest]
 
-    runs-on: ${{ matrix.os }}
+#     runs-on: ${{ matrix.os }}
 
-    steps:
-      - uses: actions/checkout@v3
+#     steps:
+#       - uses: actions/checkout@v3
       
-      - name: Upgrade yarn
-        run: |
-          yarn set version berry
+#       - name: Upgrade yarn
+#         run: |
+#           yarn set version berry
 
-      - name: Install Node modules
-        run: |
-          cd web
-          yarn install
+#       - name: Install Node modules
+#         run: |
+#           cd web
+#           yarn install
 
-      - name: Run the tests
-        run: |
-          cd web
-          yarn run test:karma-once
+#       - name: Run the tests
+#         run: |
+#           cd web
+#           yarn run test:karma-once

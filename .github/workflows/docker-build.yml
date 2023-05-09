@@ -1,0 +1,120 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: TCS.pgAdmin4
+
+on:
+  workflow_dispatch: # enable manually running this workflow
+    branches:
+      - main
+  push:
+    branches: 
+      - main
+      - development
+  pull_request:
+    branches: 
+      - main
+      - development
+
+env:
+  REGISTRY: ghcr.io
+  # The destination of the build artifact
+  CONTENT_PATH: ./
+  IMAGE_NAME: ${{ github.repository }}
+  BUILD_VERSION_ID: 0.0.1
+  TAG_ID: 0.0.0
+  CONTAINER_DESCRIPTION: "pgAdmin4 in non-root user"
+
+jobs:
+
+  docker:
+    name: Docker Build & Push
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Downcase env.IMAGE_NAME
+        run: |
+          echo "IMAGE_NAME=${IMAGE_NAME,,}" >> ${GITHUB_ENV}
+
+      - name: Checkout
+        uses: actions/checkout@v3  
+      
+      - name: Set Tag Output
+        env:
+          TAG: ${{ github.event.head_commit.message }}
+        run: echo "TAG_ID=$(bash ./.github/workflows/get-version.sh)" >> ${GITHUB_ENV}
+
+        #https://fluxcd.io/docs/guides/sortable-image-tags/#example-of-a-build-process-with-timestamp-tagging
+      - name: Generate build ID
+        id: buildid
+        run: |
+          echo "BUILD_VERSION_ID=${GITHUB_SHA::8}-$(date +'%Y%m%d-%H%M%S')" >> ${GITHUB_ENV}
+
+      - name: Set up Docker Buildx #https://github.com/marketplace/actions/build-and-push-docker-images
+        uses: docker/setup-buildx-action@v2 #https://github.com/docker/setup-buildx-action
+        with:
+          install: true
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=edge
+            type=raw,${{ env.BUILD_VERSION_ID }}
+            type=raw,${{ github.ref }}
+            type=semver,pattern={{version}},value=${{ env.TAG_ID }}
+          labels: |
+            org.opencontainers.image.title=${{ env.IMAGE_NAME }}
+            org.opencontainers.image.description=${{ env.CONTAINER_DESCRIPTION }}
+            org.opencontainers.image.version=${{ env.TAG_ID }}
+
+      - name: Login to Docker image registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ${{ env.CONTENT_PATH }}/Dockerfile
+          build-args: CONTENT_PATH=${{ env.CONTENT_PATH }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: | 
+            ${{ steps.meta.outputs.tags }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BUILD_VERSION_ID }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}
+
+      # https://github.com/aquasecurity/trivy-action#inputs
+      - name: Run Trivy vulnerability scanner
+        if: github.event_name != 'pull_request'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BUILD_VERSION_ID }}
+          format: "table"
+          #        exit-code: '1' # comment out if you want failed builds upon security issues
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+          output: "trivy-results.sarif"
+        env:
+          TRIVY_USERNAME: ${{ github.repository_owner }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          
+        # https://github.com/ncipollo/release-action
+        # Insert content into the body of the release text
+      - name: Create release
+        if: ${{ env.TAG_ID != '0.0.0' }} 
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ env.TAG_PREFIX }}${{ env.TAG_ID }}
+          body: ${{ github.event.head_commit.message }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
