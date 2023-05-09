@@ -30,9 +30,9 @@ running the container.
 docker build -t pgadmin4:local .
 
 # Run it
-docker run --rm --name "pgadminLocal" `
-    -p 5051:5050 `
+docker run -it --rm --name "pgadminLocal" `
+    -p 5051:8080 `
     -e 'PGADMIN_DEFAULT_EMAIL=rbk@trifork.com' `
     -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' `
-    -d pgadmin4:local
+    pgadmin4:local
 ```

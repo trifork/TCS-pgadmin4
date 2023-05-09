@@ -171,6 +171,8 @@ RUN ln -s libpq.so.5.15 /usr/lib/libpq.so.5 && \
 
 WORKDIR /pgadmin4
 ENV PYTHONPATH=/pgadmin4
+ENV PGADMIN_LISTEN_PORT=8080
+
 
 # Copy in the code and docs
 COPY --from=app-builder /pgadmin4/web /pgadmin4
@@ -210,6 +212,7 @@ RUN apk add \
     echo "pgadminr ALL = NOPASSWD: /usr/sbin/postfix start" >> /etc/sudoers.d/postfix
 
 RUN chown pgadmin:root /venv/bin/gunicorn 
+RUN chown pgadmin:root /venv/bin/python3
 
 USER pgadmin
 
