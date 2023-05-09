@@ -31,7 +31,7 @@ docker build -t pgadmin4:local .
 
 # Run it
 docker run -it --rm --name "pgadminLocal" `
-    -p 5051:5050 `
+    -p 5051:8080 `
     -e 'PGADMIN_DEFAULT_EMAIL=rbk@trifork.com' `
     -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' `
     pgadmin4:local
