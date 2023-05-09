@@ -66,7 +66,7 @@ FROM alpine:latest as env-builder
 
 # Install dependencies
 COPY requirements.txt /
-RUN     apk add --no-cache \
+RUN apk add --no-cache \
         make \
         python3 \
         py3-pip && \
@@ -209,10 +209,12 @@ RUN apk add \
     echo "pgadmin ALL = NOPASSWD: /usr/sbin/postfix start" > /etc/sudoers.d/postfix && \
     echo "pgadminr ALL = NOPASSWD: /usr/sbin/postfix start" >> /etc/sudoers.d/postfix
 
+RUN chown pgadmin:root /venv/bin/gunicorn 
+
 USER pgadmin
 
 # Finish up
 VOLUME /var/lib/pgadmin
-EXPOSE 80 443
+EXPOSE 8080 8443
 
 ENTRYPOINT ["/entrypoint.sh"]
