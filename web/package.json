@@ -112,7 +112,7 @@
     "closest": "^0.0.1",
     "codemirror": "^5.59.2",
     "convert-units": "^2.3.4",
-    "cssnano": "^5.0.2",
+    "cssnano": "^6.0.1",
     "dagre": "^0.8.4",
     "date-fns": "^2.24.0",
     "diff-arrays-of-objects": "^1.1.8",
