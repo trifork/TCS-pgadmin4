@@ -213,6 +213,7 @@ RUN apk add \
 
 RUN chown pgadmin:root /venv/bin/gunicorn 
 RUN chown pgadmin:root /venv/bin/python3
+RUN chown pgadmin:root -R /var/lib/pgadmin
 
 USER pgadmin
 
