@@ -172,6 +172,7 @@ RUN ln -s libpq.so.5.15 /usr/lib/libpq.so.5 && \
 WORKDIR /pgadmin4
 ENV PYTHONPATH=/pgadmin4
 ENV PGADMIN_LISTEN_PORT=8080
+ENV DEBUG_ME=""
 
 
 # Copy in the code and docs
@@ -213,6 +214,8 @@ RUN apk add \
 
 RUN chown pgadmin:root /venv/bin/gunicorn 
 RUN chown pgadmin:root /venv/bin/python3
+RUN chown pgadmin:root /usr/sbin/postfix
+
 RUN chown pgadmin:root -R /var/lib/pgadmin
 
 USER pgadmin
