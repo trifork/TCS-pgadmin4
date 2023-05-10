@@ -66,7 +66,7 @@ FROM alpine:latest as env-builder
 
 # Install dependencies
 COPY requirements.txt /
-RUN apk add --no-cache \
+RUN     apk add --no-cache \
         make \
         python3 \
         py3-pip && \
@@ -171,9 +171,9 @@ RUN ln -s libpq.so.5.15 /usr/lib/libpq.so.5 && \
 
 WORKDIR /pgadmin4
 ENV PYTHONPATH=/pgadmin4
-ENV PGADMIN_LISTEN_PORT=8080
-ENV PGADMIN_LISTEN_ADDRESS=0.0.0.0
-ENV DEBUG_ME=""
+ENV PGADMIN_LISTEN_PORT=80
+ENV PGADMIN_LISTEN_ADDRESS="[::]"
+ENV PGADMIN_LISTEN_PORT_SSL=443
 
 
 # Copy in the code and docs
@@ -209,24 +209,25 @@ RUN apk add \
     chown pgadmin:root /pgadmin4/config_distro.py && \
     chmod g=u /pgadmin4/config_distro.py && \
     chmod g=u /etc/passwd && \
-    setcap CAP_NET_BIND_SERVICE=+eip /usr/bin/python3.10 && \
+    setcap CAP_NET_BIND_SERVICE=+eip /usr/bin/python3.11 && \
     echo "pgadmin ALL = NOPASSWD: /usr/sbin/postfix start" > /etc/sudoers.d/postfix && \
     echo "pgadminr ALL = NOPASSWD: /usr/sbin/postfix start" >> /etc/sudoers.d/postfix
 
+# Allow user to run services
 ARG PID=pgadmin:root
 RUN chown $PID /venv/bin/gunicorn 
 RUN chown $PID /venv/bin/python3
 RUN chown $PID /usr/sbin/postfix
 
-RUN chown -R $PID /var/lib/pgadmin
 RUN mkdir -p /var/log/pgadmin
 RUN chown -R $PID /var/log/pgadmin
+RUN chown -R $PID /var/lib/pgadmin
 RUN chown -R $PID /pgadmin4
 
 USER pgadmin
 
 # Finish up
 VOLUME /var/lib/pgadmin
-EXPOSE 8080 8443
+EXPOSE $PGADMIN_LISTEN_PORT $PGADMIN_LISTEN_PORT_SSL
 
 ENTRYPOINT ["/entrypoint.sh"]

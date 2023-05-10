@@ -3,53 +3,53 @@ updates:
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     labels:
       - "Dependencies"
     commit-message:
       prefix: "Docker dependency"
       
-  # - package-ecosystem: "pip"
-  #   directory: "/"
-  #   schedule:
-  #     interval: "daily"
-  #   labels:
-  #     - "Dependencies"
-  #   commit-message:
-  #     prefix: "Python dependency"
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "Dependencies"
+    commit-message:
+      prefix: "Python dependency"
       
-  # - package-ecosystem: "pip"
-  #   directory: "/tools"
-  #   schedule:
-  #     interval: "daily"
-  #   labels:
-  #     - "Dependencies"
-  #   commit-message:
-  #     prefix: "Python dependency"  
+  - package-ecosystem: "pip"
+    directory: "/tools"
+    schedule:
+      interval: "daily"
+    labels:
+      - "Dependencies"
+    commit-message:
+      prefix: "Python dependency"  
       
-  # - package-ecosystem: "pip"
-  #   directory: "/web/regression"
-  #   schedule:
-  #     interval: "daily"
-  #   labels:
-  #     - "Dependencies"
-  #   commit-message:
-  #     prefix: "Python dependency"  
+  - package-ecosystem: "pip"
+    directory: "/web/regression"
+    schedule:
+      interval: "daily"
+    labels:
+      - "Dependencies"
+    commit-message:
+      prefix: "Python dependency"  
       
-  # - package-ecosystem: "npm"
-  #   directory: "/runtime"
-  #   schedule:
-  #     interval: "daily"
-  #   labels:
-  #     - "Dependencies"
-  #   commit-message:
-  #     prefix: "Python dependency"  
+  - package-ecosystem: "npm"
+    directory: "/runtime"
+    schedule:
+      interval: "daily"
+    labels:
+      - "Dependencies"
+    commit-message:
+      prefix: "Python dependency"  
       
-  # - package-ecosystem: "npm"
-  #   directory: "/web"
-  #   schedule:
-  #     interval: "daily"
-  #   labels:
-  #     - "Dependencies"
-  #   commit-message:
-  #     prefix: "Python dependency"  
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "daily"
+    labels:
+      - "Dependencies"
+    commit-message:
+      prefix: "Python dependency"  
