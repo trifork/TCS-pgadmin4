@@ -24,15 +24,3 @@ excluded from the final image, other files will not be.
 
 See the documentation at *docs/en_US/container_deployment.rst* for information on
 running the container.
-
-```powershell
-# Build a local version
-docker build -t pgadmin4:local .
-
-# Run it
-docker run -it --rm --name "pgadminLocal" `
-    -p 5051:8080 `
-    -e 'PGADMIN_DEFAULT_EMAIL=rbk@trifork.com' `
-    -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' `
-    pgadmin4:local
-```
