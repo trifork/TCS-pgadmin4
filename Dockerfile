@@ -219,9 +219,9 @@ RUN chown $PID /venv/bin/gunicorn
 RUN chown $PID /venv/bin/python3
 RUN chown $PID /usr/sbin/postfix
 
-RUN chown -R $PID /var/lib/pgadmin
 RUN mkdir -p /var/log/pgadmin
 RUN chown -R $PID /var/log/pgadmin
+RUN chown -R $PID /var/lib/pgadmin
 RUN chown -R $PID /pgadmin4
 
 USER pgadmin
