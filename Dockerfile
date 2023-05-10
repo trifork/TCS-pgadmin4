@@ -66,7 +66,7 @@ FROM alpine:latest as env-builder
 
 # Install dependencies
 COPY requirements.txt /
-RUN apk add --no-cache \
+RUN     apk add --no-cache \
         make \
         python3 \
         py3-pip && \
